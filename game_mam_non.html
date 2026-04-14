@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bé Tìm Nhà Cho Bạn Thú</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #fff9c4; text-align: center; margin: 0; overflow: hidden; }
+        h1 { color: #ff5722; text-shadow: 2px 2px #fff; margin-top: 10px; }
+        
+        #game-area { display: flex; justify-content: space-around; padding: 20px; }
+        
+        .zone { width: 40%; height: 300px; border: 5px dashed #5d4037; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        #forest { background-color: #a5d6a7; } /* Màu rừng */
+        #ocean { background-color: #90caf9; }  /* Màu biển */
+        .zone-title { font-weight: bold; font-size: 24px; margin-bottom: 10px; }
+
+        #animal-dock { background: white; padding: 20px; display: flex; justify-content: center; gap: 20px; min-height: 100px; }
+        
+        .animal { font-size: 60px; cursor: grab; user-select: none; transition: transform 0.2s; }
+        .animal:active { cursor: grabbing; transform: scale(1.2); }
+        
+        #message { font-size: 30px; font-weight: bold; height: 50px; margin-top: 20px; color: #e91e63; }
+        
+        .success-effect { animation: bounce 0.5s; }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🏡 TÌM NHÀ CHO CÁC BẠN THÚ 🏡</h1>
+    <p>Bé hãy kéo các bạn thú về đúng nhà của mình nhé!</p>
+
+    <div id="game-area">
+        <div id="forest" class="zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-habitat="land">
+            <div class="zone-title">🌲 RỪNG XANH</div>
+        </div>
+        <div id="ocean" class="zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-habitat="water">
+            <div class="zone-title">🌊 ĐẠI DƯƠNG</div>
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <div id="animal-dock">
+        <div id="lion" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="land">🦁</div>
+        <div id="fish" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="water">🐟</div>
+        <div id="monkey" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="land">🐒</div>
+        <div id="whale" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="water">🐳</div>
+        <div id="elephant" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="land">🐘</div>
+        <div id="octopus" class="animal" draggable="true" ondragstart="drag(event)" data-habitat="water">🐙</div>
+    </div>
+
+    <button onclick="location.reload()" style="margin-top: 30px; padding: 10px 20px; font-size: 20px; border-radius: 15px; background: #ff9800; color: white; border: none; cursor: pointer;">Chơi lại từ đầu</button>
+
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var animal = document.getElementById(data);
+        var zone = ev.currentTarget;
+        
+        // Kiểm tra xem con vật có thuộc môi trường này không
+        if (animal.getAttribute('data-habitat') === zone.getAttribute('data-habitat')) {
+            zone.appendChild(animal);
+            document.getElementById('message').innerText = "Đúng rồi! Giỏi quá! 🎉";
+            animal.classList.add('success-effect');
+            setTimeout(() => animal.classList.remove('success-effect'), 500);
+            checkWin();
+        } else {
+            document.getElementById('message').innerText = "Ồ, nhầm rồi! Bé thử lại nhé! ❌";
+        }
+    }
+
+    function checkWin() {
+        const dock = document.getElementById('animal-dock');
+        if (dock.children.length === 0) {
+            document.getElementById('message').innerText = "CHÚC MỪNG BÉ ĐÃ GIÚP TẤT CẢ CÁC BẠN! 🏆";
+        }
+    }
+</script>
+
+</body>
+</html>
